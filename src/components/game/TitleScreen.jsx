@@ -1,6 +1,6 @@
 import { HelpCircle, Play, RotateCcw } from "lucide-react";
 
-export function TitleScreen({ hasSave, onStart, onContinue, onHelp }) {
+export function TitleScreen({ hasSave, onStart, onContinue, onHelp, saveSummary }) {
   return (
     <main className="title-screen" aria-labelledby="pixelquest-title">
       <div className="title-cloud one" />
@@ -22,6 +22,21 @@ export function TitleScreen({ hasSave, onStart, onContinue, onHelp }) {
         </div>
         <h1 className="pixel-title" id="pixelquest-title">PIXELQUEST</h1>
         <p className="subtitle">A tiny world full of big adventures.</p>
+        <div className="world-preview" aria-hidden="true">
+          <span className="preview-village" />
+          <span className="preview-forest" />
+          <span className="preview-trail" />
+          <span className="preview-player" />
+        </div>
+        {hasSave && saveSummary ? (
+          <div className="continue-summary">
+            <strong>Continue Adventure</strong>
+            <span>Level {saveSummary.level} Explorer</span>
+            <span>{saveSummary.area}</span>
+            <span>{saveSummary.questsCompleted} quests completed</span>
+            <span>{saveSummary.worldPercent}% world discovered</span>
+          </div>
+        ) : null}
         <div className="title-actions">
           <button className="quest-button" onClick={onStart} type="button">
             <Play size={19} /> Start Adventure

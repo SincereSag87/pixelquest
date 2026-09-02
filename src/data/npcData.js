@@ -11,6 +11,7 @@ export const npcs = [
       "Whisperwood paths bend around anyone who forgets to look twice.",
     ],
     givesItem: "mapFragment",
+    questId: "woodsWhispers",
   },
   {
     id: "rowan",
@@ -36,5 +37,6 @@ export const npcs = [
       "I saw a tiny gold spark bounce toward the ruins gate. I did not chase it. Well, not far.",
       "Moonberries are best collected before they start humming.",
     ],
+    questId: "pipsMoonberries",
   },
 ];

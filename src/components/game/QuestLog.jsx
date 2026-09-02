@@ -36,10 +36,11 @@ function QuestSection({ empty, gameQuests, title }) {
               <ul className="objective-list">
                 {quest.steps.map((step) => {
                   const done = gameQuest.completedSteps.includes(step.id);
+                  const count = gameQuest.counts?.[step.id] ?? (done ? step.target ?? 1 : 0);
                   return (
                     <li className={done ? "done" : ""} key={step.id}>
                       <span aria-hidden="true">{done ? "✓" : "□"}</span>
-                      <span>{step.label}</span>
+                      <span>{step.label}{step.target ? ` (${count} / ${step.target})` : ""}</span>
                     </li>
                   );
                 })}
