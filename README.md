@@ -2,20 +2,20 @@
 
 A tiny world full of big adventures.
 
-PixelQuest is an original fictional portfolio game/demo built as a playful browser adventure. Players explore Whisperwood Village and the Old Forest Path, collect items, talk to characters, solve quests, calm woodland creatures, complete a shrine puzzle, unlock perks, and discover secrets through a colorful retro-modern interface.
+PixelQuest is an original fictional portfolio game/demo built as a playful browser adventure. Players explore Whisperwood Village, the Old Forest Path, and the Ancient Ruins, collect items, talk to characters, solve quests, calm woodland creatures, complete puzzles, craft upgrades, unlock perks, and discover secrets through a colorful retro-modern interface.
 
 ## Overview
 
-Phase 2 expands the playable foundation into a richer lightweight adventure for a GitHub portfolio project, a future CodePen-compatible demo, and a Dribbble UI/UX case study. It remains frontend-only with local/mock game state.
+Phase 3 unlocks the Ancient Ruins as a third playable area and adds a dungeon-style exploration loop, branching dialogue, collectible sets, crafting, day/night presentation, and stronger world completion tracking. It remains frontend-only with local/mock game state.
 
 ## Gameplay
 
-Start in Whisperwood Village, then walk through the eastern ruins gate to unlock Old Forest Path. The forest adds a winding trail, creek crossing, abandoned camp, ancient shrine, locked ruins, hidden items, and creature encounters.
+Start in Whisperwood Village, walk through the eastern gate to Old Forest Path, solve the Ancient Forest Shrine for the Old Forest Key, then unlock the Ruins Gate to enter the Ancient Ruins. The ruins include multiple rooms, smaller puzzles, Elyra the Archivist, a Stone Guardian trial, a sealed vault, night-only secrets, and relic collection goals.
 
 ## Features
 
 - Animated title screen with world preview and continue summary
-- Two playable areas: Whisperwood Village and Old Forest Path
+- Three playable areas: Whisperwood Village, Old Forest Path, and Ancient Ruins
 - Area transition title card and progress persistence
 - CSS-built environments with cottages, trees, creek, cart, shrine, camp, mushrooms, ruins, and ambient effects
 - Keyboard and mobile movement controls
@@ -31,13 +31,24 @@ Start in Whisperwood Village, then walk through the eastern ruins gate to unlock
 - Map overlay with discovered, undiscovered, locked, and current-area states
 - Achievement and level-up banners
 - Settings panel with music, sound effects, volume, reduced effects, prompts, and reset
-- Local progress persistence with save migration for older Phase 1 saves
+- Branching Mira dialogue with remembered choices
+- Elyra the Archivist and optional lore quest
+- Dungeon-style ruins progression through Entrance Hall, Hall of Echoes, Rune Gallery, Flooded Chamber, Archivist Room, Moon Shrine, and Sealed Vault
+- Stone Guardian pattern trial with sound-independent visual sequence
+- Hall of Echoes and Flooded Chamber puzzles
+- Crafting recipes for Moonberry Tonic, Forest Charm, and Explorer Pack
+- Collections panel for Ancient Relics, Whisperwood Memories, secrets, and completion progress
+- Day, Sunset, and Night presentation cycle with optional time-cycle setting
+- Optional generated Web Audio ambience and sound effects
+- Local progress persistence with save migration for older Phase 1/2 saves
 
 ## Quests
 
 - The Missing Lantern: help Old Rowan recover his lantern.
 - Whispers in the Woods: investigate Mira's strange forest lights, find three trail markers, inspect the abandoned camp, calm the Bramble Sprite, and return to Mira.
 - Pip's Moonberries: collect five forest Moonberries for Pip.
+- Echoes Beneath the Ruins: unlock the gate, enter the ruins, find rune fragments, solve the Hall of Echoes, reach the Moon Shrine, complete the Guardian trial, recover the Star Compass, and return to Mira.
+- Fragments of Memory: find four lost inscriptions for Elyra the Archivist.
 
 ## Controls
 
@@ -48,6 +59,7 @@ Start in Whisperwood Village, then walk through the eastern ruins gate to unlock
 - Map: `M`
 - Pause: `Escape`
 - Cycle tracked quest: click the quest tracker in the HUD
+- Crafting and Collections: use the HUD icons
 
 Mobile and tablet layouts include on-screen directional controls and an interaction button.
 
@@ -66,14 +78,14 @@ Mobile and tablet layouts include on-screen directional controls and an interact
 ```text
 src/
   components/game/   Playable UI, world, overlays, HUD, controls
-  data/              Area, NPC, item, quest, achievement, encounter, and puzzle data
+  data/              Area, NPC, item, quest, achievement, encounter, puzzle, crafting, collection, and ruins data
   hooks/             Game state, local save, and movement logic
   styles/            Global visual system and responsive CSS
   App.jsx            Screen orchestration
   main.jsx           React entry point
 ```
 
-The game state is grouped around player, current area, inventory, quests, achievements, discovered locations, puzzles, encounters, secrets, dialogue, panels, pause state, and settings. No backend, authentication, or cloud saving is included.
+The game state is grouped around player, current area, ruins room, day/night state, inventory, quests, achievements, discovered locations, puzzles, guardian state, crafting, collections, encounters, secrets, dialogue choices, panels, pause state, and settings. No backend, authentication, or cloud saving is included.
 
 ## Accessibility
 
@@ -87,6 +99,7 @@ The game state is grouped around player, current area, inventory, quests, achiev
 - Non-color quest, rarity, and map status labels
 - ARIA labels/live regions for gameplay feedback
 - Sound effects can be disabled
+- Guardian and puzzle patterns are displayed in text and visuals, so audio is never required
 
 ## Responsive Design
 
@@ -111,13 +124,13 @@ The current implementation is intentionally frontend-only and local-state driven
 
 ## Dribbble
 
-The UI now includes title, HUD, map, inventory, character, quest, dialogue, encounter, puzzle, settings, transition, achievement, and level-up moments that can be captured later for a UI/UX case study.
+The UI now includes title, HUD, map, inventory, character, quest, dialogue choice, encounter, guardian trial, puzzle, crafting, collections, settings, transition, achievement, and level-up moments that can be captured later for a UI/UX case study.
 
 ## Roadmap
 
-- Add the locked ruins as a third playable area
-- Add richer character portraits and branching dialogue
-- Add optional ambient music with generated-safe audio
-- Add more non-violent encounter outcomes
-- Add secret completion percentage and collectible sets
+- Add richer character portraits and longer branching dialogue arcs
+- Add a fourth area beyond the Sealed Vault
+- Add more craftable utility items and temporary perks
+- Add optional generated-safe ambient music refinements
+- Add route hints for 100% completion
 - Add screenshot captures after visual QA

@@ -32,9 +32,10 @@ export function TitleScreen({ hasSave, onStart, onContinue, onHelp, saveSummary 
           <div className="continue-summary">
             <strong>Continue Adventure</strong>
             <span>Level {saveSummary.level} Explorer</span>
-            <span>{saveSummary.area}</span>
+            <span>{saveSummary.area}{saveSummary.room ? ` - ${saveSummary.room}` : ""}</span>
             <span>{saveSummary.questsCompleted} quests completed</span>
             <span>{saveSummary.worldPercent}% world discovered</span>
+            <span>{saveSummary.secrets} / 6 secrets found</span>
           </div>
         ) : null}
         <div className="title-actions">

@@ -13,6 +13,7 @@ export function SettingsPanel({ onClose, onReset, onUpdate, settings }) {
         <label className="setting-row"><span>Volume</span><input max="1" min="0" onChange={(event) => onUpdate("volume", Number(event.target.value))} step="0.05" type="range" value={settings.volume} /></label>
         <label className="setting-row"><span>Reduced Effects</span><input checked={settings.reducedEffects} onChange={(event) => onUpdate("reducedEffects", event.target.checked)} type="checkbox" /></label>
         <label className="setting-row"><span>Show Interaction Prompts</span><input checked={settings.showPrompts} onChange={(event) => onUpdate("showPrompts", event.target.checked)} type="checkbox" /></label>
+        <label className="setting-row"><span>Time Cycle</span><input checked={settings.timeCycle} onChange={(event) => onUpdate("timeCycle", event.target.checked)} type="checkbox" /></label>
         <button className="quest-button ghost" onClick={onReset} type="button">Reset Adventure</button>
       </section>
     </div>

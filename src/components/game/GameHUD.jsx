@@ -1,4 +1,4 @@
-import { Backpack, CircleHelp, Heart, Map, Pause, ScrollText, Settings, Star, Trophy, UserRound, Zap } from "lucide-react";
+import { Backpack, CircleHelp, Hammer, Heart, Library, Map, Pause, ScrollText, Settings, Star, Trophy, UserRound, Zap } from "lucide-react";
 
 export function GameHUD({ game, onCycleQuest, onPanel, onPause, trackedQuest }) {
   const questName = trackedQuest.catalog?.name ?? "Explore Whisperwood";
@@ -28,6 +28,8 @@ export function GameHUD({ game, onCycleQuest, onPanel, onPause, trackedQuest }) 
         <button aria-label="Inventory" className="icon-button" onClick={() => onPanel("inventory")} type="button"><Backpack size={19} /></button>
         <button aria-label="Quest Log" className="icon-button" onClick={() => onPanel("quests")} type="button"><ScrollText size={19} /></button>
         <button aria-label="Map" className="icon-button" onClick={() => onPanel("map")} type="button"><Map size={19} /></button>
+        <button aria-label="Crafting" className="icon-button" onClick={() => onPanel("crafting")} type="button"><Hammer size={19} /></button>
+        <button aria-label="Collections" className="icon-button" onClick={() => onPanel("collections")} type="button"><Library size={19} /></button>
         <button aria-label="Settings" className="icon-button" onClick={() => onPanel("settings")} type="button"><Settings size={19} /></button>
         <button aria-label="Help" className="icon-button" onClick={() => onPanel("help")} type="button"><CircleHelp size={19} /></button>
         <button aria-label="Pause" className="icon-button" onClick={onPause} type="button"><Pause size={19} /></button>

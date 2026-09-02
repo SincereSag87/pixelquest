@@ -2,11 +2,16 @@ import { useCallback, useState } from "react";
 import { AchievementToast } from "./components/game/AchievementToast";
 import { AreaTransition } from "./components/game/AreaTransition";
 import { CharacterPanel } from "./components/game/CharacterPanel";
+import { CollectionsPanel } from "./components/game/CollectionsPanel";
+import { CraftingPanel } from "./components/game/CraftingPanel";
+import { DayNightIndicator } from "./components/game/DayNightIndicator";
 import { DialoguePanel } from "./components/game/DialoguePanel";
+import { DungeonRoom } from "./components/game/DungeonRoom";
 import { EncounterPanel } from "./components/game/EncounterPanel";
 import { GameHUD } from "./components/game/GameHUD";
 import { GameToast } from "./components/game/GameToast";
 import { GameWorld } from "./components/game/GameWorld";
+import { GuardianEncounter } from "./components/game/GuardianEncounter";
 import { HelpPanel } from "./components/game/HelpPanel";
 import { InspectPanel } from "./components/game/InspectPanel";
 import { InventoryPanel } from "./components/game/InventoryPanel";
@@ -33,12 +38,18 @@ export default function App() {
     activeTrackedQuest,
     achievementToasts,
     area,
+    areaNpcs,
     areaTransition,
+    chooseDialogue,
     cycleTrackedQuest,
+    craftRecipe,
+    currentRoom,
     dialogue,
     encounter,
     encounterAction,
     game,
+    guardianAction,
+    guardianPanel,
     inspect,
     interact,
     levelToasts,
@@ -51,12 +62,14 @@ export default function App() {
     paused,
     puzzle,
     pushToast,
+    recipes,
     recoverAtCamp,
     resetAdventure,
     selectRune,
     setActivePanel,
     setDialogue,
     setEncounter,
+    setGuardianPanel,
     setInspect,
     setPaused,
     setPuzzle,
@@ -65,6 +78,7 @@ export default function App() {
     toasts,
     updateSetting,
     consumeInventoryItem,
+    worldProgress,
   } = gameState;
 
   const openPanel = useCallback((panel) => {
@@ -93,7 +107,7 @@ export default function App() {
   }, [openPanel, screen, setActivePanel, setPaused]);
 
   const controls = usePlayerMovement({
-    enabled: screen === "game" && !paused && !activePanel && !dialogue && !encounter && !puzzle && !inspect,
+    enabled: screen === "game" && !paused && !activePanel && !dialogue && !encounter && !puzzle && !inspect && !guardianPanel,
     movePlayer,
     onInteract: interact,
     onShortcut: shortcut,
@@ -117,7 +131,7 @@ export default function App() {
   const saveSummary = hasSave ? summarizeSave(loadSave()) : null;
 
   return (
-    <div className={`app-shell ${game.settings.reducedEffects ? "reduced-effects" : ""}`}>
+    <div className={`app-shell ${game.timeState.toLowerCase()} ${game.settings.reducedEffects ? "reduced-effects" : ""}`}>
       {screen === "title" ? (
         <TitleScreen
           hasSave={hasSave}
@@ -129,8 +143,11 @@ export default function App() {
       ) : (
         <main className="game-layout">
           <GameHUD game={game} onCycleQuest={cycleTrackedQuest} onPanel={openPanel} onPause={() => setPaused(true)} trackedQuest={activeTrackedQuest} />
+          <DayNightIndicator timeState={game.timeState} />
+          <DungeonRoom room={currentRoom} />
           <GameWorld
             area={area}
+            areaNpcs={areaNpcs}
             collectedIds={game.collectedIds}
             game={game}
             nearbyCollectible={nearbyCollectible}
@@ -148,6 +165,7 @@ export default function App() {
         <DialoguePanel
           dialogue={dialogue}
           onClose={() => setDialogue(null)}
+          onChoice={chooseDialogue}
           onNext={() => setDialogue((current) => ({ ...current, index: current.index + 1 }))}
         />
       ) : null}
@@ -161,17 +179,21 @@ export default function App() {
           discoveredLocations={game.discoveredLocations}
           onClose={closePanel}
           onLocked={(location) => {
-            pushToast(`${location.name} remains locked in Phase 2.`, "info");
+            pushToast(`${location.name} remains locked until the ruins open.`, "info");
           }}
+          progress={worldProgress}
         />
       ) : null}
       {activePanel === "settings" ? <SettingsPanel onClose={closePanel} onReset={restart} onUpdate={updateSetting} settings={game.settings} /> : null}
+      {activePanel === "crafting" ? <CraftingPanel crafted={game.craftedRecipes} inventory={game.inventory} onClose={closePanel} onCraft={craftRecipe} recipes={recipes} /> : null}
+      {activePanel === "collections" ? <CollectionsPanel game={game} onClose={closePanel} progress={worldProgress} /> : null}
       {activePanel === "help" ? <HelpPanel onClose={closePanel} /> : null}
       {encounter ? <EncounterPanel encounter={encounter} energy={game.player.energy} onAction={encounterAction} onClose={() => setEncounter(null)} /> : null}
+      {guardianPanel && game.guardian ? <GuardianEncounter guardian={game.guardian} onAction={guardianAction} onClose={() => setGuardianPanel(false)} /> : null}
       {puzzle ? (
         <PuzzlePanel
           onClose={() => setPuzzle(null)}
-          onReset={() => setPuzzle({ selected: [] })}
+          onReset={() => setPuzzle((current) => ({ ...current, selected: [] }))}
           onSelect={selectRune}
           onSubmit={submitPuzzle}
           puzzle={puzzle}
@@ -202,7 +224,10 @@ function summarizeSave(save) {
   return {
     level: save.player?.level ?? 1,
     area: areaName,
+    room: save.currentRoom,
     questsCompleted: save.completedQuests?.length ?? 0,
     worldPercent: Math.min(100, Math.round((discovered / mapLocations.length) * 100)),
+    secrets: save.secretsFound?.length ?? 0,
+    playTime: save.stats?.playTime ?? 0,
   };
 }

@@ -9,4 +9,12 @@ export const achievements = {
   secretSeeker: { id: "secretSeeker", name: "Secret Seeker", description: "Discover a hidden item", icon: "?" },
   growingAdventurer: { id: "growingAdventurer", name: "Growing Adventurer", description: "Reach Level 2", icon: "2" },
   woodlandGuide: { id: "woodlandGuide", name: "Woodland Guide", description: "Complete Whispers in the Woods", icon: "W" },
+  gatekeeper: { id: "gatekeeper", name: "Gatekeeper", description: "Unlock Ancient Ruins", icon: "G" },
+  ruinsExplorer: { id: "ruinsExplorer", name: "Ruins Explorer", description: "Discover every main ruins room", icon: "RX" },
+  patternBreaker: { id: "patternBreaker", name: "Pattern Breaker", description: "Complete the Stone Guardian trial", icon: "PB" },
+  loreKeeper: { id: "loreKeeper", name: "Lore Keeper", description: "Complete Fragments of Memory", icon: "LK" },
+  masterCrafter: { id: "masterCrafter", name: "Master Crafter", description: "Craft three unique items", icon: "CR" },
+  nightWanderer: { id: "nightWanderer", name: "Night Wanderer", description: "Discover a night-only secret", icon: "NW" },
+  relicHunter: { id: "relicHunter", name: "Relic Hunter", description: "Complete the Ancient Relics collection", icon: "RH" },
+  explorerSupreme: { id: "explorerSupreme", name: "Explorer Supreme", description: "Reach Level 4", icon: "4" },
 };

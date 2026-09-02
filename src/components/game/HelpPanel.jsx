@@ -15,6 +15,7 @@ export function HelpPanel({ onClose }) {
           <li><kbd>Q</kbd> Quest Log</li>
           <li><kbd>M</kbd> Map</li>
           <li><kbd>Esc</kbd> Pause</li>
+          <li><kbd>HUD</kbd> Crafting, Collections, Character, Settings</li>
         </ul>
       </section>
     </div>

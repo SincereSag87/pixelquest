@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
 
-export function DialoguePanel({ dialogue, onClose, onNext }) {
+export function DialoguePanel({ dialogue, onChoice, onClose, onNext }) {
   const { npc, index } = dialogue;
   const hasNext = index < npc.dialogue.length - 1;
+  const choiceBlock = npc.choices?.[0];
 
   return (
     <div className="panel-backdrop" role="presentation">
@@ -17,7 +18,19 @@ export function DialoguePanel({ dialogue, onClose, onNext }) {
           </div>
           <button aria-label="Close dialogue" className="close-button" onClick={onClose} type="button"><X size={20} /></button>
         </div>
-        <p className="dialogue-text">{npc.dialogue[index]}</p>
+        <div className="dialogue-text">
+          <p>{dialogue.response ?? npc.dialogue[index]}</p>
+          {choiceBlock && !dialogue.response ? (
+            <div className="choice-block">
+              <p><strong>{choiceBlock.prompt}</strong></p>
+              {choiceBlock.options.map((choice) => (
+                <button className="quest-button ghost" key={choice.id} onClick={() => onChoice(npc.id, choice)} type="button">
+                  {choice.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
         <div className="dialogue-actions">
           {hasNext ? (
             <button className="quest-button" onClick={onNext} type="button">Continue dialogue</button>

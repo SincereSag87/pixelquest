@@ -49,6 +49,9 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--sky); 
 .game-layout { position: relative; min-height: 100vh; padding: 1rem; }
 .game-stage { position: relative; width: min(100%, 1180px); height: min(70vh, 680px); min-height: 520px; margin: 5.5rem auto 0; overflow: hidden; border: 5px solid #274f72; background: radial-gradient(circle at 70% 32%, rgba(88, 199, 243, 0.32), transparent 9rem), linear-gradient(180deg, #1a7754 0%, #2f9a61 42%, #6e9c4c 100%); box-shadow: 0 24px 60px var(--shadow), inset 0 0 0 4px rgba(255, 241, 201, 0.08); touch-action: none; }
 .game-stage.forest { background: radial-gradient(circle at 60% 28%, rgba(247, 198, 91, 0.18), transparent 12rem), linear-gradient(160deg, #0d342c 0%, #1e6945 48%, #244532 100%); }
+.game-stage.ruins { background: radial-gradient(circle at 76% 36%, rgba(65, 226, 218, 0.18), transparent 12rem), linear-gradient(160deg, #14243c 0%, #27304f 48%, #183b38 100%); }
+.app-shell.sunset { filter: sepia(0.08) saturate(1.08); }
+.app-shell.night { background: radial-gradient(circle at 70% 8%, rgba(151, 182, 255, 0.18), transparent 18rem), linear-gradient(180deg, #050b1f, #111d38); }
 .area-banner { position: absolute; left: 1rem; top: 1rem; z-index: 30; max-width: 23rem; padding: 0.65rem 0.8rem; color: #1f170b; background: var(--cream); border: 3px solid #75482f; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.22); }
 .area-banner strong { display: block; font-size: 1rem; }
 .area-banner span { display: block; font-size: 0.82rem; color: #5f4327; }
@@ -85,6 +88,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--sky); 
 .forest-shrine { position: absolute; left: 66%; top: 21%; width: 6rem; height: 6rem; border: 0.55rem solid #a9b8a7; border-top: 0; box-shadow: inset 0 0 0 0.4rem #596959, 0 0 28px rgba(247, 198, 91, 0.35); }
 .ancient-gate { position: absolute; right: 7%; top: 20%; width: 7rem; height: 9rem; border: 0.75rem solid #80917f; border-bottom: 0; border-radius: 4rem 4rem 0 0; }
 .locked-ruins { position: absolute; right: 12%; bottom: 13%; width: 8rem; height: 5rem; background: #7d8980; border: 5px solid #596959; clip-path: polygon(0 15%, 28% 0, 48% 20%, 76% 6%, 100% 24%, 100% 100%, 0 100%); }
+.locked-ruins.unlocked { background: #58c7f3; box-shadow: 0 0 26px #58c7f3; }
 .abandoned-camp { position: absolute; left: 40%; top: 26%; width: 4rem; height: 4rem; border-radius: 50%; border: 4px dashed #d6aa68; background: rgba(35, 27, 19, 0.45); }
 .forest-tree { position: absolute; width: 5rem; height: 6rem; animation: sway 3.5s ease-in-out infinite; transform-origin: bottom center; }
 .forest-tree::before { content: ""; position: absolute; left: 2rem; bottom: 0; width: 1rem; height: 2.2rem; background: #5f3829; }
@@ -98,6 +102,25 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--sky); 
 .leaf { position: absolute; width: 0.65rem; height: 0.35rem; background: #f7c65b; border-radius: 50%; animation: leafDrift 7s linear infinite; }
 .lf1 { left: 20%; top: 12%; } .lf2 { left: 38%; top: 20%; animation-delay: -2s; } .lf3 { left: 58%; top: 18%; animation-delay: -4s; } .lf4 { left: 80%; top: 30%; animation-delay: -1s; }
 .lf5 { left: 17%; top: 42%; animation-delay: -5s; } .lf6 { left: 70%; top: 70%; animation-delay: -3s; } .lf7 { left: 47%; top: 64%; animation-delay: -6s; } .lf8 { left: 90%; top: 12%; animation-delay: -2.7s; } .lf9 { left: 8%; top: 82%; animation-delay: -4.8s; }
+.ruins-floor { position: absolute; inset: 8% 5%; background: linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), #25314e; background-size: 4rem 4rem; border: 6px solid #6e7b92; }
+.ruins-room { position: absolute; border: 4px solid #8290aa; background: rgba(20, 36, 60, 0.82); box-shadow: inset 0 0 0 3px rgba(65, 226, 218, 0.12); }
+.ruins-room.entrance { left: 8%; top: 43%; width: 16%; height: 22%; }
+.ruins-room.echoes { left: 31%; top: 38%; width: 17%; height: 22%; }
+.ruins-room.gallery { left: 49%; top: 18%; width: 16%; height: 19%; }
+.ruins-room.flooded { left: 49%; bottom: 15%; width: 18%; height: 18%; }
+.ruins-room.archivist { left: 27%; top: 20%; width: 16%; height: 17%; }
+.ruins-room.moon { right: 16%; top: 32%; width: 16%; height: 19%; border-color: #41e2da; }
+.ruins-room.vault { right: 7%; bottom: 15%; width: 14%; height: 20%; border-color: #f7c65b; }
+.ruins-room.vault.open { background: rgba(247, 198, 91, 0.24); box-shadow: 0 0 30px rgba(247, 198, 91, 0.45); }
+.underground-pool { position: absolute; left: 51%; bottom: 18%; width: 13%; height: 10%; border-radius: 45%; background: #216f89; border: 4px solid #58c7f3; animation: shimmer 2.6s ease-in-out infinite; }
+.column { position: absolute; width: 2.1rem; height: 6rem; background: #718098; border: 4px solid #4a5770; }
+.c1 { left: 21%; top: 22%; } .c2 { left: 45%; top: 62%; transform: rotate(82deg); } .c3 { right: 23%; top: 18%; }
+.statue { position: absolute; width: 3.5rem; height: 5rem; background: #8794aa; border: 4px solid #4a5770; clip-path: polygon(50% 0, 80% 25%, 80% 100%, 20% 100%, 20% 25%); }
+.s1 { left: 22%; top: 38%; } .s2 { left: 64%; top: 30%; }
+.light-shaft { position: absolute; top: 8%; width: 6rem; height: 28rem; background: linear-gradient(180deg, rgba(88,199,243,0.22), transparent); transform: skewX(-18deg); animation: pulse 3s ease-in-out infinite; }
+.light-shaft.one { left: 22%; } .light-shaft.two { right: 20%; animation-delay: -1.4s; }
+.ruin-rune { position: absolute; width: 1rem; height: 1rem; background: #41e2da; box-shadow: 0 0 18px #41e2da; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); animation: pulse 2s ease-in-out infinite; }
+.rr1 { left: 15%; top: 56%; } .rr2 { left: 38%; top: 47%; } .rr3 { left: 57%; top: 28%; } .rr4 { left: 58%; top: 76%; } .rr5 { left: 77%; top: 43%; } .rr6 { left: 88%; top: 72%; } .rr7 { left: 34%; top: 31%; } .rr8 { left: 48%; top: 18%; }
 
 .entity { position: absolute; transform: translate(-50%, -50%); }
 .player { z-index: 15; width: 2.8rem; height: 3.4rem; filter: drop-shadow(0 7px 0 rgba(0, 0, 0, 0.2)); }
@@ -179,6 +202,15 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--sky); 
 .area-transition strong { font-size: clamp(2rem, 7vw, 5rem); text-shadow: 0 5px 0 #173052; }
 .area-transition span { max-width: 44rem; color: #cfe9f2; }
 .level-stack { right: auto; left: 1rem; top: 1rem; bottom: auto; }
+.day-night { position: fixed; left: 1rem; top: 5.8rem; z-index: 39; }
+.room-indicator { position: fixed; right: 1rem; top: 5.8rem; z-index: 39; display: grid; padding: 0.55rem 0.7rem; color: var(--cream); background: #132b50; border: 2px solid #58c7f3; font-weight: 800; }
+.guardian-panel { background: linear-gradient(180deg, #fff1c9, #d8ecff); }
+.guardian-core { display: grid; place-items: center; width: 7rem; height: 7rem; margin: 0 auto 1rem; color: var(--cream); background: #27304f; border: 6px solid #41e2da; box-shadow: 0 0 30px rgba(65,226,218,0.45); font-size: 1.4rem; font-weight: 900; animation: pulse 1.6s ease-in-out infinite; }
+.trial-dot { margin-left: 0.35rem; color: #27304f; font-size: 1.4rem; }
+.craft-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.8rem; }
+.collection-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.collection-list span { padding: 0.35rem 0.5rem; color: var(--cream); background: #132b50; border: 2px solid #315f88; }
+.world-progress { padding: 0.85rem; margin-bottom: 1rem; background: #ffe6ab; border: 3px solid #b68043; }
 .reduced-effects *, .reduced-effects *::before, .reduced-effects *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 
 @keyframes drift { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 24rem)); } }

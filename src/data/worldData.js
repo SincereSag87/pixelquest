@@ -50,6 +50,7 @@ export const areas = {
     ],
     transitionZones: [
       { id: "to-village", to: "village", x: 4, y: 52, width: 8, height: 22, label: "Whisperwood Village" },
+      { id: "to-ruins", to: "ruins", x: 82, y: 76, width: 12, height: 12, label: "Ancient Ruins", requires: "oldForestKey", gate: "ruinsGate" },
     ],
     collectibles: [
       { id: "forest-marker-1", itemId: "forestRune", x: 25, y: 57, quantity: 1, label: "Trail Marker 1", marker: true },
@@ -94,6 +95,40 @@ export const areas = {
       },
     ],
   },
+  ruins: {
+    id: "ruins",
+    name: "ANCIENT RUINS",
+    description: "Echoes of a forgotten world.",
+    entry: { x: 13, y: 55 },
+    returnPoint: { x: 13, y: 55 },
+    theme: "ruins",
+    obstacles: [
+      { id: "north-wall", x: 50, y: 10, width: 92, height: 7 },
+      { id: "south-wall", x: 50, y: 92, width: 92, height: 7 },
+      { id: "vault-door", x: 86, y: 72, width: 10, height: 18 },
+      { id: "pool", x: 57, y: 72, width: 18, height: 12 },
+      { id: "statue-left", x: 24, y: 44, width: 7, height: 12 },
+      { id: "statue-right", x: 66, y: 36, width: 7, height: 12 },
+    ],
+    transitionZones: [
+      { id: "to-forest", to: "forest", x: 4, y: 55, width: 8, height: 18, label: "Old Forest Path" },
+    ],
+    collectibles: [
+      { id: "ruin-fragment-1", itemId: "runeFragment", x: 24, y: 62, quantity: 1, label: "Rune Fragment", runeFragment: true },
+      { id: "ruin-fragment-2", itemId: "runeFragment", x: 55, y: 28, quantity: 1, label: "Rune Fragment", runeFragment: true },
+      { id: "ruin-fragment-3", itemId: "runeFragment", x: 61, y: 78, quantity: 1, label: "Rune Fragment", runeFragment: true },
+      { id: "echo-crystal", itemId: "echoCrystal", x: 39, y: 47, quantity: 1, label: "Echo Crystal" },
+      { id: "moon-tablet", itemId: "moonTablet", x: 88, y: 64, quantity: 1, label: "Moon Tablet", secret: true },
+      { id: "night-rune-cache", itemId: "guardianShard", x: 49, y: 18, quantity: 1, label: "Night Rune Cache", secret: true, nightOnly: true },
+    ],
+    inspectables: [
+      { id: "inscription-entrance", x: 18, y: 50, title: "Entrance Inscription", text: "The first hall opens only to those who carry a remembered key.", inscription: true },
+      { id: "inscription-gallery", x: 55, y: 27, title: "Rune Gallery Wall", text: "Three fragments make one sentence. One sentence opens one silence.", inscription: true },
+      { id: "inscription-flooded", x: 55, y: 68, title: "Flooded Chamber Mark", text: "Water follows the stone that listens first.", inscription: true },
+      { id: "inscription-shrine", x: 76, y: 40, title: "Moon Shrine Text", text: "Moon, tree, river. Stand steady and answer without striking.", inscription: true, questStep: { questId: "echoesRuins", stepId: "moon-shrine" } },
+      { id: "archivist-cache", x: 31, y: 26, title: "Archivist Cache", text: "A narrow alcove holds tidy charcoal notes and an empty token-shaped groove.", secret: true },
+    ],
+  },
 };
 
 export const mapLocations = [
@@ -103,4 +138,8 @@ export const mapLocations = [
   { id: "camp", area: "forest", name: "Abandoned Camp", status: "undiscovered", x: 43, y: 28 },
   { id: "creek", area: "forest", name: "Creek Crossing", status: "undiscovered", x: 45, y: 72 },
   { id: "ruins", area: "forest", name: "Ruins Gate", status: "locked", x: 84, y: 76 },
+  { id: "ancientRuins", area: "ruins", name: "Ancient Ruins", status: "locked", x: 70, y: 64 },
+  { id: "hallEchoes", area: "ruins", name: "Hall of Echoes", status: "undiscovered", x: 38, y: 48 },
+  { id: "moonShrine", area: "ruins", name: "Moon Shrine", status: "undiscovered", x: 76, y: 43 },
+  { id: "archivist", area: "ruins", name: "Archivist Room", status: "undiscovered", x: 34, y: 32 },
 ];

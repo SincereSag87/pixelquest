@@ -34,4 +34,30 @@ export const quests = {
       { id: "return-pip", label: "Return to Pip" },
     ],
   },
+  echoesRuins: {
+    id: "echoesRuins",
+    name: "Echoes Beneath the Ruins",
+    description: "Discover the ancient chamber revealed by Mira's recovered map fragment.",
+    reward: { xp: 150, coins: 75, item: "starCompass", badge: "Ruins Scholar", perk: "Rune Reader" },
+    steps: [
+      { id: "unlock-gate", label: "Unlock the Ruins Gate" },
+      { id: "enter-ruins", label: "Enter Ancient Ruins" },
+      { id: "rune-fragments", label: "Find three Rune Fragments", target: 3 },
+      { id: "hall-echoes", label: "Decode the Hall of Echoes" },
+      { id: "moon-shrine", label: "Reach the Moon Shrine" },
+      { id: "guardian", label: "Complete the Guardian trial" },
+      { id: "star-compass", label: "Recover the Star Compass" },
+      { id: "return-mira", label: "Return to Mira" },
+    ],
+  },
+  memoryFragments: {
+    id: "memoryFragments",
+    name: "Fragments of Memory",
+    description: "Find four lost inscriptions for Elyra the Archivist.",
+    reward: { xp: 60, coins: 0, item: "archivistToken", badge: "Lore Keeper" },
+    steps: [
+      { id: "inscriptions", label: "Find 4 lost inscriptions", target: 4 },
+      { id: "return-elyra", label: "Return to Elyra" },
+    ],
+  },
 };

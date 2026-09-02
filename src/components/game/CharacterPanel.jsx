@@ -27,12 +27,25 @@ export function CharacterPanel({ areaName, game, onClose }) {
         <h3>Adventure Stats</h3>
         <div className="stats-grid">
           <span>Items Found <strong>{game.stats.itemsFound}</strong></span>
+          <span>Steps Taken <strong>{game.stats.stepsTaken}</strong></span>
+          <span>Coins Found <strong>{game.stats.coinsFound}</strong></span>
           <span>Quests Completed <strong>{game.stats.questsCompleted}</strong></span>
+          <span>Puzzles Solved <strong>{game.stats.puzzlesSolved}</strong></span>
+          <span>Creatures Calmed <strong>{game.stats.creaturesCalmed}</strong></span>
           <span>Areas Discovered <strong>{game.stats.areasDiscovered}</strong></span>
+          <span>Items Crafted <strong>{game.stats.itemsCrafted}</strong></span>
           <span>NPCs Helped <strong>{game.stats.npcsHelped}</strong></span>
           <span>Secrets Found <strong>{game.secretsFound.length}</strong></span>
+          <span>Play Time <strong>{formatTime(game.stats.playTime)}</strong></span>
         </div>
       </section>
     </div>
   );
+}
+
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const remaining = minutes % 60;
+  return hours ? `${hours}h ${remaining}m` : `${remaining}m`;
 }

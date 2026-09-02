@@ -1,4 +1,3 @@
-import { shrinePuzzle } from "../../data/puzzleData";
 import { X } from "lucide-react";
 
 export function PuzzlePanel({ onClose, onReset, onSelect, onSubmit, puzzle }) {
@@ -6,12 +5,12 @@ export function PuzzlePanel({ onClose, onReset, onSelect, onSubmit, puzzle }) {
     <div className="panel-backdrop" role="presentation">
       <section aria-labelledby="puzzle-title" className="game-panel" role="dialog">
         <div className="panel-header">
-          <h2 id="puzzle-title">{shrinePuzzle.name}</h2>
+          <h2 id="puzzle-title">{puzzle.puzzle.name}</h2>
           <button aria-label="Close puzzle" className="close-button" onClick={onClose} type="button"><X size={20} /></button>
         </div>
-        <p><strong>Clue:</strong> {shrinePuzzle.clue}</p>
+        <p><strong>Clue:</strong> {puzzle.puzzle.clue}</p>
         <div className="rune-grid">
-          {shrinePuzzle.runes.map((rune) => (
+          {puzzle.puzzle.runes.map((rune) => (
             <button className="rune-button" key={rune.id} onClick={() => onSelect(rune.id)} type="button">
               <strong>{rune.symbol}</strong>
               <span>{rune.label}</span>

@@ -1,7 +1,7 @@
 import { Lock, MapPin, X } from "lucide-react";
 import { mapLocations } from "../../data/worldData";
 
-export function MapPanel({ currentArea, discoveredLocations, onClose, onLocked }) {
+export function MapPanel({ currentArea, discoveredLocations, onClose, onLocked, progress }) {
   return (
     <div className="panel-backdrop" role="presentation">
       <section aria-labelledby="map-title" className="game-panel" role="dialog">
@@ -11,8 +11,8 @@ export function MapPanel({ currentArea, discoveredLocations, onClose, onLocked }
         </div>
         <div className="map-grid">
           {mapLocations.map((location) => {
-            const locked = location.status === "locked";
             const discovered = discoveredLocations.includes(location.id) || discoveredLocations.includes(location.area);
+            const locked = location.status === "locked" && !discovered;
             return (
               <button
                 className={`map-location ${location.area === currentArea ? "current" : ""}`}
@@ -27,6 +27,13 @@ export function MapPanel({ currentArea, discoveredLocations, onClose, onLocked }
               </button>
             );
           })}
+        </div>
+        <div className="world-progress compact">
+          <h3>Completion</h3>
+          <strong>{progress.total}%</strong>
+          <div className="stats-grid">
+            {Object.entries(progress.areas).map(([name, value]) => <span key={name}>{name} <strong>{value}%</strong></span>)}
+          </div>
         </div>
       </section>
     </div>
