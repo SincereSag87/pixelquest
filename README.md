@@ -136,7 +136,7 @@ Screenshots belong in `docs/screenshots/`. No screenshots are fabricated in this
 
 ## CodePen
 
-Live CodePen Demo: Coming soon
+Live CodePen Demo: https://hardy-math-pig.codepen.app/
 
 The repository includes a smaller standalone playable CodePen slice of PixelQuest:
 
