@@ -8,6 +8,7 @@ import { npcs } from "../data/npcData";
 import { ruinsPuzzles, shrinePuzzle } from "../data/puzzleData";
 import { quests as questCatalog } from "../data/questData";
 import { guardianTrial, ruinsRooms } from "../data/ruinsData";
+import { constellationTrial, sanctuaryRooms } from "../data/sanctuaryData";
 import { areas, WORLD_BOUNDS } from "../data/worldData";
 import { SAVE_KEY, clearSave, loadSave } from "./useLocalSave";
 
@@ -19,7 +20,7 @@ const xpLevels = [
 ];
 
 export const initialState = {
-  version: 3,
+  version: 4,
   currentArea: "village",
   currentRoom: null,
   timeState: "Day",
@@ -50,13 +51,19 @@ export const initialState = {
   gateUnlocked: false,
   dungeonProgress: { hallOpen: false, echoesSolved: false, waterRedirected: false, shrineReached: false, vaultOpen: false },
   guardian: null,
+  finalTrial: null,
   craftedRecipes: [],
   dialogueChoices: {},
+  sanctuaryProgress: { vaultOpened: false, moonSeal: false, riverSeal: false, treeSeal: false, observatoryReached: false, finalTrialComplete: false },
+  finalChoice: null,
+  storyComplete: false,
+  postGame: false,
+  customization: { outfit: "Forest Green", accessory: "Traveler Scarf", badge: "Forest Explorer Badge" },
   lore: [],
   inspectedIds: [],
   secretsFound: [],
   stats: { playTime: 0, stepsTaken: 0, itemsFound: 0, coinsFound: 0, questsCompleted: 0, puzzlesSolved: 0, creaturesCalmed: 0, secretsFound: 0, areasDiscovered: 1, itemsCrafted: 0, npcsHelped: 0 },
-  settings: { music: false, sfx: true, volume: 0.35, reducedEffects: false, showPrompts: true, timeCycle: true },
+  settings: { music: false, sfx: true, volume: 0.35, reducedEffects: false, showPrompts: true, timeCycle: true, completionHints: true, presentationMode: false },
 };
 
 function migrateSave(save) {
@@ -64,7 +71,7 @@ function migrateSave(save) {
   return {
     ...initialState,
     ...save,
-    version: 3,
+    version: 4,
     currentArea: save.currentArea ?? "village",
     currentRoom: save.currentRoom ?? null,
     timeState: save.timeState ?? "Day",
@@ -80,8 +87,14 @@ function migrateSave(save) {
     gateUnlocked: save.gateUnlocked ?? false,
     dungeonProgress: { ...initialState.dungeonProgress, ...(save.dungeonProgress ?? {}) },
     guardian: save.guardian ?? null,
+    finalTrial: save.finalTrial ?? null,
     craftedRecipes: save.craftedRecipes ?? [],
     dialogueChoices: save.dialogueChoices ?? {},
+    sanctuaryProgress: { ...initialState.sanctuaryProgress, ...(save.sanctuaryProgress ?? {}) },
+    finalChoice: save.finalChoice ?? null,
+    storyComplete: save.storyComplete ?? false,
+    postGame: save.postGame ?? false,
+    customization: { ...initialState.customization, ...(save.customization ?? {}) },
     lore: save.lore ?? [],
     inspectedIds: save.inspectedIds ?? [],
     secretsFound: save.secretsFound ?? [],
@@ -141,11 +154,13 @@ export function useGameState({ loadExisting = false } = {}) {
   const areaEncounters = Object.values(encounters).filter((entry) => entry.area === game.currentArea && !game.solvedEncounters.includes(entry.id));
   const currentRoom = game.currentArea === "ruins"
     ? ruinsRooms.find((room) => distance(game.player.position, room) < 14) ?? ruinsRooms[0]
+    : game.currentArea === "sanctuary"
+      ? sanctuaryRooms.find((room) => distance(game.player.position, room) < 14) ?? sanctuaryRooms[0]
     : null;
   const worldProgress = useMemo(() => {
     const totalCollectibles = Object.values(areas).flatMap((entry) => entry.collectibles).length;
-    const totalPuzzles = 3;
-    const totalSecrets = 6;
+    const totalPuzzles = 4;
+    const totalSecrets = 8;
     const foundCollections = collections.reduce((sum, collection) => sum + collection.items.filter((id) => game.inventory[id]).length, 0);
     const allCollectionItems = collections.reduce((sum, collection) => sum + collection.items.length, 0);
     const total = Math.min(100, Math.round((
@@ -164,9 +179,10 @@ export function useGameState({ loadExisting = false } = {}) {
         "Whisperwood Village": Math.min(100, Math.round((game.discoveredLocations.includes("village") ? 70 : 0) + (game.completedQuests.includes("missingLantern") ? 30 : 0))),
         "Old Forest Path": Math.min(100, Math.round((game.discoveredLocations.includes("forest") ? 35 : 0) + (game.completedPuzzles.includes("ancientShrine") ? 25 : 0) + (game.completedQuests.includes("woodsWhispers") ? 40 : 0))),
         "Ancient Ruins": Math.min(100, Math.round((game.discoveredLocations.includes("ruins") ? 20 : 0) + (game.completedPuzzles.filter((id) => ["hallEchoes", "floodedChamber"].includes(id)).length * 18) + (game.dungeonProgress.vaultOpen ? 24 : 0) + (game.completedQuests.includes("echoesRuins") ? 20 : 0))),
+        "Starfall Sanctuary": Math.min(100, Math.round((game.discoveredLocations.includes("sanctuary") ? 20 : 0) + (Object.values(game.sanctuaryProgress).filter(Boolean).length * 10) + (game.completedQuests.includes("lastLight") ? 20 : 0))),
       },
     };
-  }, [game.achievements.length, game.collectedIds.length, game.completedPuzzles, game.completedQuests, game.discoveredLocations, game.dungeonProgress.vaultOpen, game.inventory, game.secretsFound.length]);
+  }, [game.achievements.length, game.collectedIds.length, game.completedPuzzles, game.completedQuests, game.discoveredLocations, game.dungeonProgress.vaultOpen, game.inventory, game.sanctuaryProgress, game.secretsFound.length]);
 
   const pushToast = useCallback((message, type = "info") => {
     const toast = makeToast(message, type);
@@ -282,6 +298,16 @@ export function useGameState({ loadExisting = false } = {}) {
     () => game.currentArea === guardianTrial.area && !game.dungeonProgress.vaultOpen && distance(game.player.position, guardianTrial) < 7,
     [game.currentArea, game.dungeonProgress.vaultOpen, game.player.position],
   );
+  const nearbyFinalTrial = useMemo(
+    () => game.currentArea === constellationTrial.area
+      && !game.sanctuaryProgress.finalTrialComplete
+      && game.sanctuaryProgress.moonSeal
+      && game.sanctuaryProgress.riverSeal
+      && game.sanctuaryProgress.treeSeal
+      && game.sanctuaryProgress.observatoryReached
+      && distance(game.player.position, constellationTrial) < 7,
+    [game.currentArea, game.player.position, game.sanctuaryProgress],
+  );
   const nearbyPuzzle = useMemo(
     () => [shrinePuzzle, ...ruinsPuzzles].find((candidate) => game.currentArea === candidate.area && !game.completedPuzzles.includes(candidate.id) && distance(game.player.position, candidate) < 6),
     [game.completedPuzzles, game.currentArea, game.player.position],
@@ -355,7 +381,7 @@ export function useGameState({ loadExisting = false } = {}) {
 
   const transitionArea = useCallback((zone) => {
     const destination = areas[zone.to];
-    if (zone.requires && !game.gateUnlocked) {
+    if (zone.requires && zone.to === "ruins" && !game.gateUnlocked) {
       if (!game.inventory[zone.requires]) {
         pushToast(`${zone.label} needs the Old Forest Key.`, "info");
         return;
@@ -365,6 +391,15 @@ export function useGameState({ loadExisting = false } = {}) {
       unlockAchievement("gatekeeper");
       pushToast("Ruins Gate unlocked", "quest");
     }
+    if (zone.requires && zone.to === "sanctuary" && !game.sanctuaryProgress.vaultOpened) {
+      if (!game.inventory[zone.requires] || !game.dungeonProgress.vaultOpen) {
+        pushToast("The Sealed Vault needs the Star Compass and a completed Guardian trial.", "info");
+        return;
+      }
+      setGame((current) => ({ ...current, sanctuaryProgress: { ...current.sanctuaryProgress, vaultOpened: true } }));
+      updateQuestStep("lastLight", "open-vault");
+      pushToast("Sealed Vault opened", "quest");
+    }
     setGame((current) => {
       const discoveredLocations = current.discoveredLocations.includes(zone.to) ? current.discoveredLocations : [...current.discoveredLocations, zone.to];
       const nextTransitionCount = current.transitionCount + 1;
@@ -372,7 +407,7 @@ export function useGameState({ loadExisting = false } = {}) {
       return {
         ...current,
         currentArea: zone.to,
-        currentRoom: zone.to === "ruins" ? "entrance" : null,
+        currentRoom: zone.to === "ruins" ? "entrance" : zone.to === "sanctuary" ? "vaultPassage" : null,
         discoveredLocations,
         transitionCount: nextTransitionCount,
         timeState: current.settings.timeCycle ? timeStates[nextTransitionCount % timeStates.length] : current.timeState,
@@ -391,7 +426,12 @@ export function useGameState({ loadExisting = false } = {}) {
     if (zone.to === "ruins") {
       updateQuestStep("echoesRuins", "enter-ruins");
     }
-  }, [game.gateUnlocked, game.inventory, playSound, pushToast, unlockAchievement, updateQuestStep]);
+    if (zone.to === "sanctuary") {
+      acceptQuest("lastLight");
+      updateQuestStep("lastLight", "enter-sanctuary");
+      unlockAchievement("starfall");
+    }
+  }, [acceptQuest, game.dungeonProgress.vaultOpen, game.gateUnlocked, game.inventory, game.sanctuaryProgress.vaultOpened, playSound, pushToast, unlockAchievement, updateQuestStep]);
 
   const movePlayer = useCallback((dx, dy, elapsed) => {
     const speed = game.player.perks.includes("Quick Step") ? 0.68 : 0.58;
@@ -408,12 +448,21 @@ export function useGameState({ loadExisting = false } = {}) {
     setGame((current) => {
       const currentArea = areas[current.currentArea] ?? areas.village;
       if (currentArea.obstacles.some((obstacle) => inRect(candidate, obstacle))) return current;
-      const room = current.currentArea === "ruins" ? ruinsRooms.find((entry) => distance(candidate, entry) < 14)?.id ?? current.currentRoom : current.currentRoom;
+      const room = current.currentArea === "ruins"
+        ? ruinsRooms.find((entry) => distance(candidate, entry) < 14)?.id ?? current.currentRoom
+        : current.currentArea === "sanctuary"
+          ? sanctuaryRooms.find((entry) => distance(candidate, entry) < 14)?.id ?? current.currentRoom
+          : current.currentRoom;
       const discoveredLocations = room && !current.discoveredLocations.includes(room) ? [...current.discoveredLocations, room] : current.discoveredLocations;
       const foundAllRooms = ruinsRooms.every((entry) => discoveredLocations.includes(entry.id));
+      const foundAllMajor = ["village", "forest", "ruins", "sanctuary", "heart"].every((id) => discoveredLocations.includes(id));
       return {
         ...current,
-        achievements: foundAllRooms && !current.achievements.includes("ruinsExplorer") ? [...current.achievements, "ruinsExplorer"] : current.achievements,
+        achievements: [
+          ...current.achievements,
+          ...(foundAllRooms && !current.achievements.includes("ruinsExplorer") ? ["ruinsExplorer"] : []),
+          ...(foundAllMajor && !current.achievements.includes("masterExplorer") ? ["masterExplorer"] : []),
+        ],
         currentRoom: room,
         discoveredLocations,
         player: { ...current.player, position: candidate },
@@ -451,6 +500,13 @@ export function useGameState({ loadExisting = false } = {}) {
     }
     if (nearbyCollectible.runeFragment) updateQuestStep("echoesRuins", "rune-fragments");
     if (nearbyCollectible.itemId === "moonTablet") updateQuestStep("echoesRuins", "star-compass");
+    if (nearbyCollectible.seal) {
+      updateQuestStep("lastLight", nearbyCollectible.seal);
+      setGame((current) => ({
+        ...current,
+        sanctuaryProgress: { ...current.sanctuaryProgress, [nearbyCollectible.itemId]: true },
+      }));
+    }
     if (nearbyCollectible.nightOnly && game.timeState === "Night") unlockAchievement("nightWanderer");
     if (nearbyCollectible.marker) updateQuestStep("woodsWhispers", "markers");
     if (nearbyCollectible.itemId === "moonberry" && game.quests.pipsMoonberries) updateQuestStep("pipsMoonberries", "moonberries", nearbyCollectible.quantity);
@@ -470,6 +526,10 @@ export function useGameState({ loadExisting = false } = {}) {
       stats: { ...current.stats, secretsFound: nearbyInspectable.secret ? current.stats.secretsFound + 1 : current.stats.secretsFound },
     }));
     if (nearbyInspectable.questStep) updateQuestStep(nearbyInspectable.questStep.questId, nearbyInspectable.questStep.stepId);
+    if (nearbyInspectable.id === "observatory-map") {
+      setGame((current) => ({ ...current, sanctuaryProgress: { ...current.sanctuaryProgress, observatoryReached: true } }));
+      updateQuestStep("lastLight", "observatory");
+    }
     if (nearbyInspectable.inscription) updateQuestStep("memoryFragments", "inscriptions");
     if (nearbyInspectable.secret) unlockAchievement("secretSeeker");
     return true;
@@ -490,6 +550,13 @@ export function useGameState({ loadExisting = false } = {}) {
       setGame((current) => ({
         ...current,
         guardian: current.guardian ?? { round: 0, input: [], pattern: guardianTrial.pattern, energy: current.player.energy, message: "The Stone Guardian raises three glowing symbols." },
+      }));
+      return true;
+    }
+    if (nearbyFinalTrial) {
+      setGame((current) => ({
+        ...current,
+        finalTrial: current.finalTrial ?? { stage: 0, selected: [], stages: constellationTrial.stages, message: "The constellation gate waits for the old patterns." },
       }));
       return true;
     }
@@ -524,7 +591,7 @@ export function useGameState({ loadExisting = false } = {}) {
     }
     setDialogue({ npc: nearbyNpc, index: 0 });
     return true;
-  }, [acceptQuest, collectNearbyItem, completeQuest, game.completedQuests, game.inventory, game.quests.echoesRuins, game.quests.memoryFragments, game.quests.pipsMoonberries, game.quests.woodsWhispers, inspectNearby, nearbyCollectible, nearbyEncounter, nearbyGuardian, nearbyInspectable, nearbyNpc, nearbyPuzzle, pushToast, unlockAchievement, updateQuestStep]);
+  }, [acceptQuest, collectNearbyItem, completeQuest, game.completedQuests, game.inventory, game.quests.echoesRuins, game.quests.memoryFragments, game.quests.pipsMoonberries, game.quests.woodsWhispers, inspectNearby, nearbyCollectible, nearbyEncounter, nearbyFinalTrial, nearbyGuardian, nearbyInspectable, nearbyNpc, nearbyPuzzle, pushToast, unlockAchievement, updateQuestStep]);
 
   const encounterAction = useCallback((action) => {
     if (!encounter) return;
@@ -606,6 +673,24 @@ export function useGameState({ loadExisting = false } = {}) {
   }, [playSound, pushToast, puzzle, unlockAchievement, updateQuestStep]);
 
   const consumeInventoryItem = useCallback((itemId) => {
+    if (itemId === "starTonic" && game.inventory.starTonic) {
+      setGame((current) => ({
+        ...current,
+        inventory: removeItem(current.inventory, "starTonic", 1),
+        player: { ...current.player, health: current.player.maxHealth, energy: current.player.maxEnergy },
+      }));
+      pushToast("Star Tonic restored health and energy.", "item");
+      return;
+    }
+    if (itemId === "travelerSnack" && game.inventory.travelerSnack) {
+      setGame((current) => ({
+        ...current,
+        inventory: removeItem(current.inventory, "travelerSnack", 1),
+        player: { ...current.player, energy: Math.min(current.player.maxEnergy, current.player.energy + 2) },
+      }));
+      pushToast("Traveler Snack restored energy.", "item");
+      return;
+    }
     if (itemId === "moonberryTonic" && game.inventory.moonberryTonic) {
       setGame((current) => ({
         ...current,
@@ -622,7 +707,7 @@ export function useGameState({ loadExisting = false } = {}) {
       player: { ...current.player, energy: Math.min(current.player.maxEnergy, current.player.energy + 1) },
     }));
     pushToast("Moonberry restored 1 energy.", "item");
-  }, [game.inventory.moonberry, game.inventory.moonberryTonic, pushToast]);
+  }, [game.inventory.moonberry, game.inventory.moonberryTonic, game.inventory.starTonic, game.inventory.travelerSnack, pushToast]);
 
   const chooseDialogue = useCallback((npcId, choice) => {
     setGame((current) => ({ ...current, dialogueChoices: { ...current.dialogueChoices, [npcId]: choice.id } }));
@@ -706,6 +791,89 @@ export function useGameState({ loadExisting = false } = {}) {
     }
   }, [game.guardian, playSound, pushToast, unlockAchievement, updateQuestStep]);
 
+  const finalTrialSelect = useCallback((symbol) => {
+    setGame((current) => current.finalTrial ? {
+      ...current,
+      finalTrial: { ...current.finalTrial, selected: [...current.finalTrial.selected, symbol].slice(0, current.finalTrial.stages[current.finalTrial.stage].sequence.length), message: "" },
+    } : current);
+  }, []);
+
+  const finalTrialReset = useCallback(() => {
+    setGame((current) => current.finalTrial ? { ...current, finalTrial: { ...current.finalTrial, selected: [], message: "The stars reset and wait." } } : current);
+  }, []);
+
+  const finalTrialSubmit = useCallback(() => {
+    setGame((current) => {
+      if (!current.finalTrial) return current;
+      const stage = current.finalTrial.stages[current.finalTrial.stage];
+      const solved = stage.sequence.every((symbol, index) => current.finalTrial.selected[index] === symbol);
+      if (!solved) {
+        return {
+          ...current,
+          player: { ...current.player, energy: Math.max(0, current.player.energy - 1) },
+          finalTrial: { ...current.finalTrial, selected: [], message: "The constellation dims. Try the clue again." },
+        };
+      }
+      const nextStage = current.finalTrial.stage + 1;
+      if (nextStage < current.finalTrial.stages.length) {
+        return { ...current, finalTrial: { ...current.finalTrial, stage: nextStage, selected: [], message: "A new constellation wakes." } };
+      }
+      return {
+        ...current,
+        completedPuzzles: current.completedPuzzles.includes("constellationTrial") ? current.completedPuzzles : [...current.completedPuzzles, "constellationTrial"],
+        finalTrial: null,
+        sanctuaryProgress: { ...current.sanctuaryProgress, finalTrialComplete: true },
+        stats: { ...current.stats, puzzlesSolved: current.stats.puzzlesSolved + 1 },
+      };
+    });
+    updateQuestStep("lastLight", "final-trial");
+    unlockAchievement("constellationKeeper");
+    pushToast("Constellation Trial complete", "quest");
+    playSound("achievement");
+  }, [playSound, pushToast, unlockAchievement, updateQuestStep]);
+
+  const chooseFinalRestoration = useCallback((choice) => {
+    const badge = { preserve: "Starbound Keeper", share: "Village Starbearer", renew: "Wildlight Explorer" }[choice];
+    setGame((current) => {
+      const completedQuests = current.completedQuests.includes("lastLight") ? current.completedQuests : [...current.completedQuests, "lastLight"];
+      const completedCollections = collections.every((collection) => collection.items.every((id) => current.inventory[id]));
+      const achievements = [
+        ...current.achievements,
+        ...(completedCollections && !current.achievements.includes("masterCollector") ? ["masterCollector"] : []),
+        ...(completedQuests.length >= Object.keys(questCatalog).length && !current.achievements.includes("questKeeper") ? ["questKeeper"] : []),
+      ];
+      return {
+        ...current,
+        achievements,
+        finalChoice: choice,
+        storyComplete: true,
+        quests: {
+          ...current.quests,
+          lastLight: current.quests.lastLight ? {
+            ...current.quests.lastLight,
+            completedSteps: [...new Set([...current.quests.lastLight.completedSteps, "final-choice", "return-village"])],
+          } : current.quests.lastLight,
+        },
+        player: { ...current.player, badge, coins: current.player.coins + questCatalog.lastLight.reward.coins, perks: current.player.perks.includes("Collector's Instinct") ? current.player.perks : [...current.player.perks, "Collector's Instinct"] },
+        completedQuests,
+        stats: { ...current.stats, questsCompleted: current.completedQuests.includes("lastLight") ? current.stats.questsCompleted : current.stats.questsCompleted + 1, coinsFound: current.stats.coinsFound + questCatalog.lastLight.reward.coins },
+      };
+    });
+    awardXp(questCatalog.lastLight.reward.xp);
+    updateQuestStep("lastLight", "final-choice");
+    unlockAchievement("whisperwoodRestored");
+    pushToast(`Sanctuary restored: ${choice}`, "quest");
+  }, [awardXp, pushToast, unlockAchievement, updateQuestStep]);
+
+  const continuePostGame = useCallback(() => {
+    setGame((current) => ({ ...current, postGame: true, storyComplete: false }));
+    unlockAchievement("newBeginning");
+  }, [unlockAchievement]);
+
+  const updateCustomization = useCallback((key, value) => {
+    setGame((current) => ({ ...current, customization: { ...current.customization, [key]: value } }));
+  }, []);
+
   const cycleTrackedQuest = useCallback(() => {
     setGame((current) => ({ ...current, trackedQuestIndex: current.trackedQuestIndex + 1 }));
   }, []);
@@ -755,6 +923,7 @@ export function useGameState({ loadExisting = false } = {}) {
     dialogue,
     encounter,
     encounterAction,
+    finalTrial: game.finalTrial,
     game,
     inspect,
     interact,
@@ -771,6 +940,7 @@ export function useGameState({ loadExisting = false } = {}) {
     pushToast,
     recipes,
     recoverAtCamp,
+    continuePostGame,
     resetAdventure,
     selectRune,
     setActivePanel,
@@ -786,10 +956,15 @@ export function useGameState({ loadExisting = false } = {}) {
     updateSetting,
     consumeInventoryItem,
     chooseDialogue,
+    chooseFinalRestoration,
     craftRecipe,
     currentRoom,
+    finalTrialReset,
+    finalTrialSelect,
+    finalTrialSubmit,
     guardianAction,
     guardianPanel,
+    updateCustomization,
     worldProgress,
   };
 }

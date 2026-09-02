@@ -20,4 +20,32 @@ export const recipes = [
     materials: { travelersNote: 1, mapFragment: 1, ancientCoin: 1 },
     effect: "Cosmetic badge and crafting progress",
   },
+  {
+    id: "starTonic",
+    name: "Star Tonic",
+    result: "starTonic",
+    materials: { moonberryTonic: 1, sanctuaryCrystal: 1 },
+    effect: "Restore health and energy",
+  },
+  {
+    id: "runeLens",
+    name: "Rune Lens",
+    result: "runeLens",
+    materials: { runeFragment: 1, starLens: 1 },
+    effect: "Reveal one nearby puzzle hint",
+  },
+  {
+    id: "explorerBeacon",
+    name: "Explorer Beacon",
+    result: "explorerBeacon",
+    materials: { echoCrystal: 1, guardianShard: 1 },
+    effect: "Highlight undiscovered points of interest",
+  },
+  {
+    id: "travelerSnack",
+    name: "Traveler Snack",
+    result: "travelerSnack",
+    materials: { moonberry: 1, glowcapMushroom: 1 },
+    effect: "Restore energy",
+  },
 ];

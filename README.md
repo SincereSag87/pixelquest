@@ -2,53 +2,68 @@
 
 A tiny world full of big adventures.
 
-PixelQuest is an original fictional portfolio game/demo built as a playful browser adventure. Players explore Whisperwood Village, the Old Forest Path, and the Ancient Ruins, collect items, talk to characters, solve quests, calm woodland creatures, complete puzzles, craft upgrades, unlock perks, and discover secrets through a colorful retro-modern interface.
+PixelQuest is an original fictional portfolio game/demo built as a playful browser adventure. It is a frontend-only React/Vite game about exploring Whisperwood, helping memorable characters, solving gentle puzzles, collecting relics, crafting utilities, and restoring an ancient sanctuary.
 
 ## Overview
 
-Phase 3 unlocks the Ancient Ruins as a third playable area and adds a dungeon-style exploration loop, branching dialogue, collectible sets, crafting, day/night presentation, and stronger world completion tracking. It remains frontend-only with local/mock game state.
+PixelQuest is designed as a GitHub portfolio project, a future CodePen-compatible playable slice, and a Dribbble UI/UX case study. It uses local/mock state only: no backend, authentication, multiplayer, or copyrighted assets.
 
-## Gameplay
+## Story
 
-Start in Whisperwood Village, walk through the eastern gate to Old Forest Path, solve the Ancient Forest Shrine for the Old Forest Key, then unlock the Ruins Gate to enter the Ancient Ruins. The ruins include multiple rooms, smaller puzzles, Elyra the Archivist, a Stone Guardian trial, a sealed vault, night-only secrets, and relic collection goals.
+Whisperwood's strange lights lead from a quiet village into an old forest, beneath ancient ruins, and finally into Starfall Sanctuary. The final discovery reframes the mystery: the energy below Whisperwood is not a threat, but a weakening protective force. The player chooses whether to preserve, share, or renew it.
 
-## Features
+## Areas
 
-- Animated title screen with world preview and continue summary
-- Three playable areas: Whisperwood Village, Old Forest Path, and Ancient Ruins
-- Area transition title card and progress persistence
-- CSS-built environments with cottages, trees, creek, cart, shrine, camp, mushrooms, ruins, and ambient effects
-- Keyboard and mobile movement controls
-- Player boundaries and practical obstacle blocking
-- NPC proximity prompts and dialogue panel
-- Quest log with active/completed state and multi-step objective progress
-- HUD quest tracker with progress and quest cycling
-- Character panel with level, XP, health, energy, badge, perks, coins, and adventure stats
-- Encounter system with Observe, Defend, Calm, Use Item, and Flee
-- Shrine puzzle with rune sequence, clue, reset, submit, and reward
-- Hidden items and secrets tracking
-- Inventory category tabs, rarity labels, item details, and Moonberry energy restore
-- Map overlay with discovered, undiscovered, locked, and current-area states
-- Achievement and level-up banners
-- Settings panel with music, sound effects, volume, reduced effects, prompts, and reset
-- Branching Mira dialogue with remembered choices
-- Elyra the Archivist and optional lore quest
-- Dungeon-style ruins progression through Entrance Hall, Hall of Echoes, Rune Gallery, Flooded Chamber, Archivist Room, Moon Shrine, and Sealed Vault
-- Stone Guardian pattern trial with sound-independent visual sequence
-- Hall of Echoes and Flooded Chamber puzzles
-- Crafting recipes for Moonberry Tonic, Forest Charm, and Explorer Pack
-- Collections panel for Ancient Relics, Whisperwood Memories, secrets, and completion progress
-- Day, Sunset, and Night presentation cycle with optional time-cycle setting
-- Optional generated Web Audio ambience and sound effects
-- Local progress persistence with save migration for older Phase 1/2 saves
+- Whisperwood Village: starter village, NPCs, first quest, campfire, pond, cottages.
+- Old Forest Path: woodland trail, shrine, creek, abandoned camp, encounters, secrets.
+- Ancient Ruins: dungeon-style rooms, Elyra, inscriptions, Guardian trial, sealed vault.
+- Starfall Sanctuary: celestial bridge, garden, observatory, constellation gate, final chamber.
+
+## Gameplay Systems
+
+- Area-aware exploration with boundaries, obstacles, and transitions
+- Local save/continue with migration through save version 4
+- NPC dialogue with lightweight branching choices
+- Quests with active/completed state, objective counts, and HUD tracking
+- Non-violent encounters and boss-style puzzle encounter
+- Environmental inspection and lore
+- Shrine, echo, flooded chamber, Guardian, and constellation puzzles
+- Inventory with tabs, rarity, details, and usable items
+- Crafting, collections, secrets, badges, and world completion
+- Leveling through Level 4, energy, perks, and character stats
+- Character customization for outfit, accessory, and badge
+- Day/sunset/night presentation cycle
+- Optional Web Audio API tones and ambience cues
+- Endgame summary and post-game exploration
 
 ## Quests
 
-- The Missing Lantern: help Old Rowan recover his lantern.
-- Whispers in the Woods: investigate Mira's strange forest lights, find three trail markers, inspect the abandoned camp, calm the Bramble Sprite, and return to Mira.
-- Pip's Moonberries: collect five forest Moonberries for Pip.
-- Echoes Beneath the Ruins: unlock the gate, enter the ruins, find rune fragments, solve the Hall of Echoes, reach the Moon Shrine, complete the Guardian trial, recover the Star Compass, and return to Mira.
-- Fragments of Memory: find four lost inscriptions for Elyra the Archivist.
+- The Missing Lantern
+- Whispers in the Woods
+- Pip's Moonberries
+- Echoes Beneath the Ruins
+- Fragments of Memory
+- The Last Light of Whisperwood
+
+## Encounters
+
+Mossling, Bramble Sprite, and the Stone Guardian use observe/calm/defend/pattern actions instead of traditional combat.
+
+## Puzzles
+
+Puzzle mechanics are sound-independent and always expose text clues: rune order, visual echo sequence, switch sequence, Guardian pattern, and the final constellation path.
+
+## Crafting
+
+Recipes include Moonberry Tonic, Forest Charm, Explorer Pack, Star Tonic, Rune Lens, Explorer Beacon, and Traveler Snack.
+
+## Collections
+
+Collections track Ancient Relics, Celestial Relics, Whisperwood Memories, secrets, badges, and completion rewards without revealing exact hidden locations.
+
+## Progression
+
+The player gains XP, levels up, restores energy, earns badges, unlocks perks, and tracks play time, steps, items, coins, quests, puzzles, creatures calmed, secrets, areas, crafted items, and NPCs helped.
 
 ## Controls
 
@@ -58,10 +73,31 @@ Start in Whisperwood Village, walk through the eastern gate to Old Forest Path, 
 - Quest Log: `Q`
 - Map: `M`
 - Pause: `Escape`
-- Cycle tracked quest: click the quest tracker in the HUD
-- Crafting and Collections: use the HUD icons
+- Cycle tracked quest: click the HUD quest tracker
+- Crafting, Collections, Character, Customization, Hints, Settings: HUD icons
 
 Mobile and tablet layouts include on-screen directional controls and an interaction button.
+
+## Save System
+
+Progress is persisted in `localStorage`, including current area, sub-location, player stats, inventory, quests, achievements, puzzles, Guardian/final trial state, crafting, collections, day/night, customization, settings, final choice, story completion, and post-game state. Older Phase 1-3 saves are migrated safely with defaults.
+
+## Accessibility
+
+- Semantic buttons and dialog roles
+- Keyboard-accessible menus, choices, puzzles, and final story choice
+- Visible focus states
+- ARIA live regions for feedback
+- Text-based puzzle clues and Guardian patterns
+- Sound-independent puzzle solving
+- Non-color status, rarity, and completion labels
+- Reduced-motion support and in-game reduced effects toggle
+- Sound, music, completion hint, time cycle, and presentation toggles
+- Large touch targets for mobile controls
+
+## Responsive Design
+
+The game is desktop-first but playable on tablet and mobile. Panels use responsive grids, the HUD wraps, and overlays are constrained to avoid horizontal overflow.
 
 ## Tech Stack
 
@@ -70,40 +106,20 @@ Mobile and tablet layouts include on-screen directional controls and an interact
 - JavaScript
 - CSS
 - lucide-react
-- Web Audio API tones for optional sound effects
-- localStorage for mock progress and settings
+- Web Audio API
+- localStorage
 
 ## Architecture
 
 ```text
 src/
-  components/game/   Playable UI, world, overlays, HUD, controls
-  data/              Area, NPC, item, quest, achievement, encounter, puzzle, crafting, collection, and ruins data
-  hooks/             Game state, local save, and movement logic
+  components/game/   World, HUD, panels, encounters, puzzles, ending, controls
+  data/              Areas, quests, items, NPCs, achievements, crafting, collections
+  hooks/             Game state, movement, local save
   styles/            Global visual system and responsive CSS
-  App.jsx            Screen orchestration
-  main.jsx           React entry point
+  App.jsx            Screen and overlay orchestration
+  main.jsx           React entry
 ```
-
-The game state is grouped around player, current area, ruins room, day/night state, inventory, quests, achievements, discovered locations, puzzles, guardian state, crafting, collections, encounters, secrets, dialogue choices, panels, pause state, and settings. No backend, authentication, or cloud saving is included.
-
-## Accessibility
-
-- Semantic buttons and dialog roles for menus and panels
-- Keyboard-accessible menu controls and shortcuts
-- Accessible encounter and puzzle action buttons
-- Puzzle clue presented as readable text
-- Visible focus styles
-- High-contrast HUD and panel surfaces
-- Reduced-motion media query and in-game reduced effects toggle
-- Non-color quest, rarity, and map status labels
-- ARIA labels/live regions for gameplay feedback
-- Sound effects can be disabled
-- Guardian and puzzle patterns are displayed in text and visuals, so audio is never required
-
-## Responsive Design
-
-Desktop is the primary experience. Tablet and mobile layouts preserve playable controls with a compact HUD, full-width panels, virtual directional buttons, and a large interaction button. Panels and puzzle/encounter controls avoid horizontal overflow.
 
 ## Local Development
 
@@ -116,21 +132,23 @@ npm run build
 
 ## Screenshots
 
-Screenshots belong in `docs/screenshots/`. None are fabricated in this repository.
+Screenshots belong in `docs/screenshots/`. No screenshots are fabricated in this repository.
 
 ## CodePen
 
-The current implementation is intentionally frontend-only and local-state driven so a future distilled demo can be adapted for CodePen.
+Recommended future CodePen slice: title screen, Whisperwood mini area, one NPC, one collectible, The Missing Lantern starter objective, one small rune puzzle, and achievement feedback. The full game should not be flattened until the slice is intentionally designed.
 
 ## Dribbble
 
-The UI now includes title, HUD, map, inventory, character, quest, dialogue choice, encounter, guardian trial, puzzle, crafting, collections, settings, transition, achievement, and level-up moments that can be captured later for a UI/UX case study.
+Recommended final shots:
 
-## Roadmap
+1. PixelQuest title and animated world preview
+2. Whisperwood Village gameplay
+3. Old Forest Path encounter
+4. Ancient Ruins Guardian trial
+5. Starfall Sanctuary finale
+6. Inventory, quests, crafting, and collections UI
 
-- Add richer character portraits and longer branching dialogue arcs
-- Add a fourth area beyond the Sealed Vault
-- Add more craftable utility items and temporary perks
-- Add optional generated-safe ambient music refinements
-- Add route hints for 100% completion
-- Add screenshot captures after visual QA
+## Portfolio Disclaimer
+
+PixelQuest is an original fictional portfolio game/demo. All world concepts, characters, UI, and CSS/SVG/HTML artwork are original to this project.

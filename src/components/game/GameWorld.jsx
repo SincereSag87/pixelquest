@@ -23,6 +23,7 @@ export function GameWorld({
       {area.theme === "village" ? <VillageArt /> : null}
       {area.theme === "forest" ? <ForestArt gateUnlocked={game.gateUnlocked} /> : null}
       {area.theme === "ruins" ? <RuinsArt game={game} /> : null}
+      {area.theme === "sanctuary" ? <SanctuaryArt game={game} /> : null}
       {area.inspectables?.map((item) => (
         <div className="entity inspectable" key={item.id} style={{ left: `${item.x}%`, top: `${item.y}%` }}>
           <span aria-hidden="true">?</span>
@@ -33,6 +34,12 @@ export function GameWorld({
       {area.theme === "ruins" && !game.dungeonProgress.vaultOpen ? (
         <div className="entity encounter-marker guardian-marker" style={{ left: "76%", top: "45%" }}>
           <span>SG</span>
+          {game.settings.showPrompts ? <span className="interaction-prompt">Press E for trial</span> : null}
+        </div>
+      ) : null}
+      {area.theme === "sanctuary" && !game.sanctuaryProgress.finalTrialComplete ? (
+        <div className="entity shrine-puzzle final-trial-marker" style={{ left: "84%", top: "62%" }}>
+          <span>STAR</span>
           {game.settings.showPrompts ? <span className="interaction-prompt">Press E for trial</span> : null}
         </div>
       ) : null}
@@ -55,8 +62,20 @@ export function GameWorld({
             key={collectible.id}
           />
         ))}
-      <Player position={player.position} />
+      <Player customization={game.customization} position={player.position} />
     </section>
+  );
+}
+
+function SanctuaryArt({ game }) {
+  return (
+    <div className={`world-layer sanctuary-layer ${game.finalChoice ?? ""}`} aria-hidden="true">
+      <span className="star-map-floor" /><span className="celestial-bridge" /><span className="crystal-pool sanctuary" />
+      <span className="observatory" /><span className="sanctuary-garden" /><span className="constellation-gate" />
+      <span className="heart-tree" />
+      {Array.from({ length: 10 }, (_, index) => <span className={`star-node sn${index + 1}`} key={index} />)}
+      {Array.from({ length: 6 }, (_, index) => <span className={`floating-rune fr${index + 1}`} key={index} />)}
+    </div>
   );
 }
 

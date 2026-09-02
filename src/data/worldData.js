@@ -112,6 +112,7 @@ export const areas = {
     ],
     transitionZones: [
       { id: "to-forest", to: "forest", x: 4, y: 55, width: 8, height: 18, label: "Old Forest Path" },
+      { id: "to-sanctuary", to: "sanctuary", x: 92, y: 72, width: 10, height: 16, label: "Starfall Sanctuary", requires: "starCompass", gate: "sealedVault" },
     ],
     collectibles: [
       { id: "ruin-fragment-1", itemId: "runeFragment", x: 24, y: 62, quantity: 1, label: "Rune Fragment", runeFragment: true },
@@ -129,6 +130,35 @@ export const areas = {
       { id: "archivist-cache", x: 31, y: 26, title: "Archivist Cache", text: "A narrow alcove holds tidy charcoal notes and an empty token-shaped groove.", secret: true },
     ],
   },
+  sanctuary: {
+    id: "sanctuary",
+    name: "STARFALL SANCTUARY",
+    description: "Where the forest remembers the stars.",
+    entry: { x: 12, y: 54 },
+    returnPoint: { x: 12, y: 54 },
+    theme: "sanctuary",
+    obstacles: [
+      { id: "crystal-pool", x: 50, y: 77, width: 20, height: 10 },
+      { id: "observatory", x: 78, y: 31, width: 12, height: 14 },
+      { id: "constellation-gate", x: 84, y: 62, width: 12, height: 13 },
+    ],
+    transitionZones: [
+      { id: "to-ruins", to: "ruins", x: 4, y: 54, width: 8, height: 18, label: "Ancient Ruins" },
+    ],
+    collectibles: [
+      { id: "moon-seal", itemId: "moonSeal", x: 34, y: 48, quantity: 1, label: "Moon Seal", seal: "moon-seal" },
+      { id: "river-seal", itemId: "riverSeal", x: 50, y: 73, quantity: 1, label: "River Seal", seal: "river-seal" },
+      { id: "tree-seal", itemId: "treeSeal", x: 53, y: 62, quantity: 1, label: "Tree Seal", seal: "tree-seal" },
+      { id: "star-lens", itemId: "starLens", x: 78, y: 31, quantity: 1, label: "Star Lens" },
+      { id: "sanctuary-crystal", itemId: "sanctuaryCrystal", x: 64, y: 42, quantity: 1, label: "Sanctuary Crystal" },
+      { id: "garden-hidden-crystal", itemId: "sanctuaryCrystal", x: 42, y: 82, quantity: 1, label: "Garden Secret", secret: true },
+    ],
+    inspectables: [
+      { id: "vault-passage-note", x: 17, y: 50, title: "Vault Passage", text: "The Star Compass warms as stone gives way to living roots.", questStep: { questId: "lastLight", stepId: "enter-sanctuary" } },
+      { id: "observatory-map", x: 78, y: 31, title: "Ancient Observatory", text: "The sky map shows Whisperwood protected by a patient constellation.", questStep: { questId: "lastLight", stepId: "observatory" } },
+      { id: "garden-secret", x: 44, y: 80, title: "Hidden Garden Alcove", text: "A root-wrapped alcove holds a crystal grown around a tiny star.", secret: true },
+    ],
+  },
 };
 
 export const mapLocations = [
@@ -142,4 +172,8 @@ export const mapLocations = [
   { id: "hallEchoes", area: "ruins", name: "Hall of Echoes", status: "undiscovered", x: 38, y: 48 },
   { id: "moonShrine", area: "ruins", name: "Moon Shrine", status: "undiscovered", x: 76, y: 43 },
   { id: "archivist", area: "ruins", name: "Archivist Room", status: "undiscovered", x: 34, y: 32 },
+  { id: "sanctuary", area: "sanctuary", name: "Starfall Sanctuary", status: "locked", x: 86, y: 72 },
+  { id: "celestialBridge", area: "sanctuary", name: "Celestial Bridge", status: "undiscovered", x: 34, y: 48 },
+  { id: "observatory", area: "sanctuary", name: "Observatory", status: "undiscovered", x: 78, y: 31 },
+  { id: "heart", area: "sanctuary", name: "Heart of Whisperwood", status: "undiscovered", x: 84, y: 62 },
 ];

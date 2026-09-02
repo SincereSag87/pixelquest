@@ -60,4 +60,21 @@ export const quests = {
       { id: "return-elyra", label: "Return to Elyra" },
     ],
   },
+  lastLight: {
+    id: "lastLight",
+    name: "The Last Light of Whisperwood",
+    description: "Restore the ancient protective force beneath Whisperwood.",
+    reward: { xp: 250, coins: 150, badge: "Starbound Explorer", perk: "Collector's Instinct" },
+    steps: [
+      { id: "open-vault", label: "Open the Sealed Vault" },
+      { id: "enter-sanctuary", label: "Enter Starfall Sanctuary" },
+      { id: "moon-seal", label: "Restore the Moon Seal" },
+      { id: "river-seal", label: "Restore the River Seal" },
+      { id: "tree-seal", label: "Restore the Tree Seal" },
+      { id: "observatory", label: "Reach the Ancient Observatory" },
+      { id: "final-trial", label: "Complete the final constellation trial" },
+      { id: "final-choice", label: "Choose how to restore the sanctuary" },
+      { id: "return-village", label: "Return to Whisperwood Village" },
+    ],
+  },
 };

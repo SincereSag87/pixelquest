@@ -3,16 +3,20 @@ import { AchievementToast } from "./components/game/AchievementToast";
 import { AreaTransition } from "./components/game/AreaTransition";
 import { CharacterPanel } from "./components/game/CharacterPanel";
 import { CollectionsPanel } from "./components/game/CollectionsPanel";
+import { ConstellationTrial } from "./components/game/ConstellationTrial";
 import { CraftingPanel } from "./components/game/CraftingPanel";
+import { CustomizationPanel } from "./components/game/CustomizationPanel";
 import { DayNightIndicator } from "./components/game/DayNightIndicator";
 import { DialoguePanel } from "./components/game/DialoguePanel";
 import { DungeonRoom } from "./components/game/DungeonRoom";
+import { EndingPanel } from "./components/game/EndingPanel";
 import { EncounterPanel } from "./components/game/EncounterPanel";
 import { GameHUD } from "./components/game/GameHUD";
 import { GameToast } from "./components/game/GameToast";
 import { GameWorld } from "./components/game/GameWorld";
 import { GuardianEncounter } from "./components/game/GuardianEncounter";
 import { HelpPanel } from "./components/game/HelpPanel";
+import { HintsPanel } from "./components/game/HintsPanel";
 import { InspectPanel } from "./components/game/InspectPanel";
 import { InventoryPanel } from "./components/game/InventoryPanel";
 import { LevelUpToast } from "./components/game/LevelUpToast";
@@ -41,12 +45,18 @@ export default function App() {
     areaNpcs,
     areaTransition,
     chooseDialogue,
+    chooseFinalRestoration,
     cycleTrackedQuest,
     craftRecipe,
     currentRoom,
+    continuePostGame,
     dialogue,
     encounter,
     encounterAction,
+    finalTrial,
+    finalTrialReset,
+    finalTrialSelect,
+    finalTrialSubmit,
     game,
     guardianAction,
     guardianPanel,
@@ -77,6 +87,7 @@ export default function App() {
     submitPuzzle,
     toasts,
     updateSetting,
+    updateCustomization,
     consumeInventoryItem,
     worldProgress,
   } = gameState;
@@ -107,7 +118,7 @@ export default function App() {
   }, [openPanel, screen, setActivePanel, setPaused]);
 
   const controls = usePlayerMovement({
-    enabled: screen === "game" && !paused && !activePanel && !dialogue && !encounter && !puzzle && !inspect && !guardianPanel,
+    enabled: screen === "game" && !paused && !activePanel && !dialogue && !encounter && !puzzle && !inspect && !guardianPanel && !finalTrial && !game.storyComplete,
     movePlayer,
     onInteract: interact,
     onShortcut: shortcut,
@@ -131,7 +142,7 @@ export default function App() {
   const saveSummary = hasSave ? summarizeSave(loadSave()) : null;
 
   return (
-    <div className={`app-shell ${game.timeState.toLowerCase()} ${game.settings.reducedEffects ? "reduced-effects" : ""}`}>
+    <div className={`app-shell ${game.timeState.toLowerCase()} ${game.settings.reducedEffects ? "reduced-effects" : ""} ${game.settings.presentationMode ? "presentation-mode" : ""}`}>
       {screen === "title" ? (
         <TitleScreen
           hasSave={hasSave}
@@ -144,7 +155,7 @@ export default function App() {
         <main className="game-layout">
           <GameHUD game={game} onCycleQuest={cycleTrackedQuest} onPanel={openPanel} onPause={() => setPaused(true)} trackedQuest={activeTrackedQuest} />
           <DayNightIndicator timeState={game.timeState} />
-          <DungeonRoom room={currentRoom} />
+          <DungeonRoom areaName={area.name} room={currentRoom} />
           <GameWorld
             area={area}
             areaNpcs={areaNpcs}
@@ -171,6 +182,7 @@ export default function App() {
       ) : null}
 
       {activePanel === "character" ? <CharacterPanel areaName={area.name} game={game} onClose={closePanel} /> : null}
+      {activePanel === "customize" ? <CustomizationPanel customization={game.customization} game={game} onClose={closePanel} onUpdate={updateCustomization} /> : null}
       {activePanel === "inventory" ? <InventoryPanel inventory={game.inventory} onClose={closePanel} onUse={consumeInventoryItem} /> : null}
       {activePanel === "quests" ? <QuestLog game={game} onClose={closePanel} /> : null}
       {activePanel === "map" ? (
@@ -187,9 +199,12 @@ export default function App() {
       {activePanel === "settings" ? <SettingsPanel onClose={closePanel} onReset={restart} onUpdate={updateSetting} settings={game.settings} /> : null}
       {activePanel === "crafting" ? <CraftingPanel crafted={game.craftedRecipes} inventory={game.inventory} onClose={closePanel} onCraft={craftRecipe} recipes={recipes} /> : null}
       {activePanel === "collections" ? <CollectionsPanel game={game} onClose={closePanel} progress={worldProgress} /> : null}
+      {activePanel === "hints" ? <HintsPanel game={game} onClose={closePanel} progress={worldProgress} /> : null}
       {activePanel === "help" ? <HelpPanel onClose={closePanel} /> : null}
       {encounter ? <EncounterPanel encounter={encounter} energy={game.player.energy} onAction={encounterAction} onClose={() => setEncounter(null)} /> : null}
       {guardianPanel && game.guardian ? <GuardianEncounter guardian={game.guardian} onAction={guardianAction} onClose={() => setGuardianPanel(false)} /> : null}
+      {finalTrial ? <ConstellationTrial onClose={finalTrialReset} onReset={finalTrialReset} onSelect={finalTrialSelect} onSubmit={finalTrialSubmit} trial={finalTrial} /> : null}
+      {game.sanctuaryProgress.finalTrialComplete && !game.finalChoice ? <FinalChoicePanel onChoose={chooseFinalRestoration} /> : null}
       {puzzle ? (
         <PuzzlePanel
           onClose={() => setPuzzle(null)}
@@ -213,6 +228,23 @@ export default function App() {
       <AchievementToast achievements={achievementToasts} />
       <LevelUpToast levels={levelToasts} />
       <GameToast toasts={toasts} />
+      <EndingPanel game={game} onContinue={continuePostGame} onNew={restart} onTitle={returnToTitle} progress={worldProgress} />
+    </div>
+  );
+}
+
+function FinalChoicePanel({ onChoose }) {
+  return (
+    <div className="panel-backdrop" role="presentation">
+      <section aria-labelledby="final-choice-title" className="game-panel" role="dialog">
+        <h2 id="final-choice-title">Restore the Sanctuary</h2>
+        <p>The ancient force is protective, but it needs a new promise.</p>
+        <div className="dialogue-actions">
+          <button className="quest-button" onClick={() => onChoose("preserve")} type="button">Preserve</button>
+          <button className="quest-button secondary" onClick={() => onChoose("share")} type="button">Share</button>
+          <button className="quest-button ghost" onClick={() => onChoose("renew")} type="button">Renew</button>
+        </div>
+      </section>
     </div>
   );
 }

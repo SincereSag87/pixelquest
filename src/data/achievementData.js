@@ -17,4 +17,12 @@ export const achievements = {
   nightWanderer: { id: "nightWanderer", name: "Night Wanderer", description: "Discover a night-only secret", icon: "NW" },
   relicHunter: { id: "relicHunter", name: "Relic Hunter", description: "Complete the Ancient Relics collection", icon: "RH" },
   explorerSupreme: { id: "explorerSupreme", name: "Explorer Supreme", description: "Reach Level 4", icon: "4" },
+  starfall: { id: "starfall", name: "Starfall", description: "Enter Starfall Sanctuary", icon: "SF" },
+  constellationKeeper: { id: "constellationKeeper", name: "Constellation Keeper", description: "Complete the final trial", icon: "CK" },
+  whisperwoodRestored: { id: "whisperwoodRestored", name: "Whisperwood Restored", description: "Finish the main story", icon: "WR" },
+  masterExplorer: { id: "masterExplorer", name: "Master Explorer", description: "Discover all major locations", icon: "ME" },
+  masterCollector: { id: "masterCollector", name: "Master Collector", description: "Complete all collectible sets", icon: "MC" },
+  questKeeper: { id: "questKeeper", name: "Quest Keeper", description: "Complete all main and side quests", icon: "QK" },
+  perfectAdventure: { id: "perfectAdventure", name: "Perfect Adventure", description: "Reach 100% completion", icon: "100" },
+  newBeginning: { id: "newBeginning", name: "A New Beginning", description: "Start post-game exploration", icon: "NB" },
 };
