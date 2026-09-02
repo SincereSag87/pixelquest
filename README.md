@@ -136,7 +136,20 @@ Screenshots belong in `docs/screenshots/`. No screenshots are fabricated in this
 
 ## CodePen
 
-Recommended future CodePen slice: title screen, Whisperwood mini area, one NPC, one collectible, The Missing Lantern starter objective, one small rune puzzle, and achievement feedback. The full game should not be flattened until the slice is intentionally designed.
+Live CodePen Demo: Coming soon
+
+The repository includes a smaller standalone playable CodePen slice of PixelQuest:
+
+```text
+codepen/
+  index.html
+  style.css
+  script.js
+```
+
+This demo is intentionally separate from the full React/Vite game. It uses plain HTML, CSS, and browser JavaScript with no bundler, JSX, React, npm imports, or external game engine. The slice focuses on a quick Whisperwood Village adventure with Mira, one collectible, one short quest, one rune puzzle, inventory, quest log, achievement feedback, pause/help controls, mobile controls, and dedicated demo `localStorage`.
+
+For a future CodePen post, paste `codepen/index.html` into the HTML panel, `codepen/style.css` into the CSS panel, and `codepen/script.js` into the JavaScript panel. The full production game should stay in the app source rather than being flattened into CodePen.
 
 ## Dribbble
 
